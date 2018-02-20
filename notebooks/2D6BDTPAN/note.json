@@ -1,0 +1,44 @@
+{
+  "paragraphs": [
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1519037934286_1391681177",
+      "id": "20180219-025854_194783877",
+      "dateCreated": "Feb 19, 2018 2:58:54 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "~Trash/test1",
+  "id": "2D6BDTPAN",
+  "angularObjects": {
+    "2D6KMVEJB:shared_process": [],
+    "2D8YST44Q:shared_process": [],
+    "2D5NEKACD:shared_process": [],
+    "2D78MJMJ8:shared_process": [],
+    "2D6S9AZBV:shared_process": [],
+    "2D6J9P331:shared_process": [],
+    "2D69DCA51:shared_process": [],
+    "2D5RQMZNF:shared_process": [],
+    "2D5NCQX94:shared_process": [],
+    "2D78X28BR:shared_process": [],
+    "2D6EDPEV7:shared_process": [],
+    "2D6KYQ1JZ:shared_process": [],
+    "2D71SGCS3:shared_process": [],
+    "2D5FSYRWA:shared_process": [],
+    "2D8FSEPU6:shared_process": [],
+    "2D7DCUW2A:shared_process": [],
+    "2D81WJGBZ:shared_process": [],
+    "2D767KM18:shared_process": [],
+    "2D8YQ3A7W:shared_process": [],
+    "2D8Z2R4XC:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

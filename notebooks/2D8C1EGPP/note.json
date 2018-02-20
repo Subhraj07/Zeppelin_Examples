@@ -1,0 +1,347 @@
+{
+  "paragraphs": [
+    {
+      "text": "%sh\nwhoami\n\ncurl -sSL -O \"https://www.dropbox.com/s/ggj1robwxpl9vrt/iotdemo-notebook-data.zip\"\nunzip iotdemo-notebook-data.zip\n\nhadoop fs -mkdir -p /user/cloudera/zeppelin/iotdemo\nhadoop fs -copyFromLocal -f trainingData /user/cloudera/zeppelin/iotdemo/\nhadoop fs -copyFromLocal -f enrichedEvents /user/cloudera/zeppelin/iotdemo/\n\nhadoop fs -ls /user/cloudera/zeppelin/iotdemo/",
+      "user": "anonymous",
+      "dateUpdated": "Feb 19, 2018 4:08:07 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "cloudera\nArchive:  iotdemo-notebook-data.zip\n  inflating: trainingData            \n  inflating: enrichedEvents          \nFound 2 items\n-rw-r--r--   1 cloudera cloudera      63570 2018-02-19 04:08 /user/cloudera/zeppelin/iotdemo/enrichedEvents\n-rw-r--r--   1 cloudera cloudera      33084 2018-02-19 04:08 /user/cloudera/zeppelin/iotdemo/trainingData\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519041864768_-704423206",
+      "id": "20180219-040424_628420532",
+      "dateCreated": "Feb 19, 2018 4:04:24 AM",
+      "dateStarted": "Feb 19, 2018 4:08:07 AM",
+      "dateFinished": "Feb 19, 2018 4:08:42 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\nhadoop fs -cat /user/cloudera/zeppelin/iotdemo/enrichedEvents | tail -n 10",
+      "user": "anonymous",
+      "dateUpdated": "Feb 19, 2018 4:13:08 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Overspeed,\"Y\",\"hours\",45,2773,-90.07,35.68,0,1,1\nLane Departure,\"Y\",\"hours\",45,2773,-90.04,35.19,1,1,0\nNormal,\"Y\",\"hours\",45,2773,-90.68,35.12,1,0,0\nNormal,\"Y\",\"hours\",45,2773,-91.14,34.96,0,0,0\nNormal,\"Y\",\"hours\",45,2773,-91.93,34.81,0,0,0\nNormal,\"Y\",\"hours\",45,2773,-92.31,34.78,0,1,0\nNormal,\"Y\",\"hours\",45,2773,-92.09,34.8,0,0,0\nNormal,\"Y\",\"hours\",45,2773,-91.93,34.81,0,0,0\nNormal,\"Y\",\"hours\",45,2773,-90.68,35.12,0,0,0\nNormal,\"Y\",\"hours\",45,2773,-91.74,34.89,0,0,0\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519042087971_2005084174",
+      "id": "20180219-040807_1664121094",
+      "dateCreated": "Feb 19, 2018 4:08:07 AM",
+      "dateStarted": "Feb 19, 2018 4:13:08 AM",
+      "dateFinished": "Feb 19, 2018 4:13:12 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nval sqlContext \u003d new org.apache.spark.sql.SQLContext(sc)\n\nval eventsFile \u003d sc.textFile(\"hdfs:///user/cloudera/zeppelin/iotdemo/enrichedEvents\")\n\ncase class Event(eventType: String, \n                isCertified: String, \n                paymentScheme: String, \n                hoursDriven: Int, \n                milesDriven: Int, \n                lat: Float, \n                long: Float, \n                isFoggy: Int, \n                isRainy: Int, \n                isWindy: Int)\n\nval eventsRDD \u003d eventsFile.map(s \u003d\u003e s.split(\",\")).map(\n    s \u003d\u003e Event(s(0),        //eventType\n            s(1).replaceAll(\"\\\"\", \"\"),  //isCertified\n            s(2).replaceAll(\"\\\"\", \"\"),  //paymentScheme\n            s(3).toInt,     //hoursDriven\n            s(4).toInt,     //milesDriven\n            s(5).toFloat,   //latitude\n            s(6).toFloat,   //longitude\n            s(7).toInt,     //isFoggy\n            s(8).toInt,     //isRainy\n            s(9).toInt      //isWindy\n        )\n    )\n\n//             scaleEvents(s(3).toInt),     //hoursDriven\n\n\neventsRDD.count\n\neventsRDD.toDF().registerTempTable(\"enrichedEvents\")\n",
+      "user": "anonymous",
+      "dateUpdated": "Feb 19, 2018 4:14:25 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "sqlContext: org.apache.spark.sql.SQLContext \u003d org.apache.spark.sql.SQLContext@3c12fc34\neventsFile: org.apache.spark.rdd.RDD[String] \u003d hdfs:///user/cloudera/zeppelin/iotdemo/enrichedEvents MapPartitionsRDD[82] at textFile at \u003cconsole\u003e:30\ndefined class Event\neventsRDD: org.apache.spark.rdd.RDD[Event] \u003d MapPartitionsRDD[84] at map at \u003cconsole\u003e:34\nres10: Long \u003d 1359\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519042362555_-1593889331",
+      "id": "20180219-041242_1021763649",
+      "dateCreated": "Feb 19, 2018 4:12:42 AM",
+      "dateStarted": "Feb 19, 2018 4:14:25 AM",
+      "dateFinished": "Feb 19, 2018 4:14:31 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql\n\nselect * from enrichedEvents order by hoursDriven desc limit 10\n",
+      "user": "anonymous",
+      "dateUpdated": "Feb 19, 2018 4:15:56 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false
+            },
+            "helium": {}
+          }
+        },
+        "editorSetting": {
+          "language": "sql"
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "eventType\tisCertified\tpaymentScheme\thoursDriven\tmilesDriven\tlat\tlong\tisFoggy\tisRainy\tisWindy\nLane Departure\tN\tmiles\t90\t4300\t-91.59\t41.7\t1\t0\t0\nUnsafe tail distance\tN\tmiles\t90\t4300\t-87.67\t41.87\t1\t1\t1\nNormal\tN\tmiles\t90\t4300\t-91.47\t41.74\t0\t0\t0\nNormal\tN\tmiles\t90\t4300\t-89.91\t40.86\t0\t0\t0\nOverspeed\tN\tmiles\t90\t4300\t-93.04\t41.71\t1\t0\t0\nNormal\tN\tmiles\t90\t4300\t-89.52\t40.7\t0\t0\t0\nNormal\tN\tmiles\t90\t4300\t-91.05\t41.72\t0\t0\t1\nNormal\tN\tmiles\t90\t4300\t-90.29\t40.96\t0\t0\t1\nLane Departure\tN\tmiles\t90\t4300\t-88.42\t41.11\t1\t1\t1\nUnsafe following distance\tN\tmiles\t90\t4300\t-88.77\t40.76\t0\t1\t1\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519042436324_-2000878691",
+      "id": "20180219-041356_716940298",
+      "dateCreated": "Feb 19, 2018 4:13:56 AM",
+      "dateStarted": "Feb 19, 2018 4:15:39 AM",
+      "dateFinished": "Feb 19, 2018 4:15:40 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql\n\nselect eventType, count(*) occurences from enrichedEvents group by eventType\n",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2018 12:56:52 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false
+            },
+            "helium": {}
+          }
+        },
+        "editorSetting": {
+          "language": "sql"
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "eventType\toccurences\nNormal\t1200\nUnsafe following distance\t34\nOverspeed\t50\nUnsafe tail distance\t38\nLane Departure\t37\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519042539228_1402210006",
+      "id": "20180219-041539_685975012",
+      "dateCreated": "Feb 19, 2018 4:15:39 AM",
+      "dateStarted": "Feb 19, 2018 4:17:35 AM",
+      "dateFinished": "Feb 19, 2018 4:17:36 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql\n\nselect isCertified, count(*) numViolations from enrichedEvents where eventType in (\"Unsafe tail distance\", \"Overspeed\", \"Lane Departure\", \"Unsafe following distance\") group by isCertified",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2018 12:57:04 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false
+            },
+            "helium": {}
+          }
+        },
+        "editorSetting": {
+          "language": "sql"
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "isCertified\tnumViolations\nN\t62\nY\t97\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519042622294_73595434",
+      "id": "20180219-041702_679097931",
+      "dateCreated": "Feb 19, 2018 4:17:02 AM",
+      "dateStarted": "Feb 19, 2018 4:18:32 AM",
+      "dateFinished": "Feb 19, 2018 4:18:33 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql\n\nselect eventType, isCertified, hoursDriven from enrichedEvents group by eventType, isCertified, hoursDriven",
+      "user": "anonymous",
+      "dateUpdated": "Feb 20, 2018 12:57:23 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": true,
+              "setting": {
+                "multiBarChart": {}
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "hoursDriven",
+                  "index": 2.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "isCertified",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "editorSetting": {
+          "language": "sql"
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "eventType\tisCertified\thoursDriven\nNormal\tY\t55\nNormal\tY\t56\nNormal\tY\t57\nNormal\tY\t58\nNormal\tY\t59\nNormal\tY\t60\nNormal\tN\t70\nUnsafe following distance\tN\t0\nNormal\tN\t90\nUnsafe tail distance\tN\t0\nUnsafe following distance\tY\t45\nUnsafe following distance\tY\t49\nUnsafe following distance\tY\t50\nUnsafe following distance\tY\t51\nUnsafe following distance\tY\t52\nUnsafe following distance\tY\t53\nOverspeed\tN\t0\nUnsafe following distance\tY\t55\nUnsafe following distance\tY\t57\nUnsafe following distance\tY\t58\nUnsafe following distance\tY\t59\nLane Departure\tN\t0\nUnsafe tail distance\tY\t47\nUnsafe following distance\tN\t70\nUnsafe tail distance\tY\t49\nUnsafe tail distance\tY\t50\nUnsafe tail distance\tY\t51\nUnsafe tail distance\tY\t52\nUnsafe tail distance\tY\t53\nUnsafe tail distance\tY\t55\nUnsafe tail distance\tY\t56\nUnsafe tail distance\tY\t57\nUnsafe tail distance\tY\t59\nUnsafe tail distance\tY\t60\nUnsafe following distance\tN\t90\nUnsafe tail distance\tN\t90\nOverspeed\tY\t45\nOverspeed\tY\t47\nOverspeed\tY\t49\nOverspeed\tY\t50\nOverspeed\tY\t51\nLane Departure\tY\t45\nOverspeed\tY\t52\nLane Departure\tY\t46\nOverspeed\tY\t53\nNormal\tN\t0\nOverspeed\tY\t55\nOverspeed\tY\t56\nLane Departure\tY\t49\nLane Departure\tY\t51\nOverspeed\tY\t58\nOverspeed\tY\t59\nOverspeed\tY\t60\nLane Departure\tY\t54\nOverspeed\tN\t70\nLane Departure\tY\t56\nLane Departure\tY\t57\nLane Departure\tY\t58\nLane Departure\tY\t60\nLane Departure\tN\t70\nOverspeed\tN\t90\nLane Departure\tN\t90\nNormal\tY\t45\nNormal\tY\t46\nNormal\tY\t47\nNormal\tY\t48\nNormal\tY\t49\nNormal\tY\t50\nNormal\tY\t51\nNormal\tY\t52\nNormal\tY\t53\nNormal\tY\t54\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519042655095_-771451069",
+      "id": "20180219-041735_1174789358",
+      "dateCreated": "Feb 19, 2018 4:17:35 AM",
+      "dateStarted": "Feb 19, 2018 4:19:03 AM",
+      "dateFinished": "Feb 19, 2018 4:19:04 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql\n",
+      "user": "anonymous",
+      "dateUpdated": "Feb 19, 2018 4:18:32 AM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1519042712388_-1101639849",
+      "id": "20180219-041832_1091302534",
+      "dateCreated": "Feb 19, 2018 4:18:32 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "sample/predicting",
+  "id": "2D8C1EGPP",
+  "angularObjects": {
+    "2D8YST44Q:shared_process": [],
+    "2D5NEKACD:shared_process": [],
+    "2D78MJMJ8:shared_process": [],
+    "2D6S9AZBV:shared_process": [],
+    "2D6J9P331:shared_process": [],
+    "2D69DCA51:shared_process": [],
+    "2D5RQMZNF:shared_process": [],
+    "2D5NCQX94:shared_process": [],
+    "2D78X28BR:shared_process": [],
+    "2D6EDPEV7:shared_process": [],
+    "2D6KYQ1JZ:shared_process": [],
+    "2D5FSYRWA:shared_process": [],
+    "2D71SGCS3:shared_process": [],
+    "2D8FSEPU6:shared_process": [],
+    "2D7DCUW2A:shared_process": [],
+    "2D81WJGBZ:shared_process": [],
+    "2D6PQ5G9Q:shared_process": [],
+    "2D767KM18:shared_process": [],
+    "2D8YQ3A7W:shared_process": [],
+    "2D8Z2R4XC:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

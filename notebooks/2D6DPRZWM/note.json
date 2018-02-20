@@ -1,0 +1,225 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark.pyspark\n\nimport pandas as pd\n\npd",
+      "user": "anonymous",
+      "dateUpdated": "Feb 15, 2018 2:24:10 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u003cmodule \u0027pandas\u0027 from \u0027/home/cloudera/anaconda2/lib/python2.7/site-packages/pandas/__init__.pyc\u0027\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1518683252224_-1072530393",
+      "id": "20180215-002732_1168339562",
+      "dateCreated": "Feb 15, 2018 12:27:32 AM",
+      "dateStarted": "Feb 15, 2018 2:24:10 AM",
+      "dateFinished": "Feb 15, 2018 2:24:10 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%file\n\nls /user",
+      "user": "anonymous",
+      "dateUpdated": "Feb 15, 2018 1:04:24 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/undefined"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "cloudera\nhistory\nhive\nhue\njenkins\noozie\nroot\nspark\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1518683259751_524962365",
+      "id": "20180215-002739_1464388953",
+      "dateCreated": "Feb 15, 2018 12:27:39 AM",
+      "dateStarted": "Feb 15, 2018 1:04:25 AM",
+      "dateFinished": "Feb 15, 2018 1:04:27 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\n\nsc",
+      "user": "anonymous",
+      "dateUpdated": "Feb 19, 2018 2:42:28 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "res0: org.apache.spark.SparkContext \u003d org.apache.spark.SparkContext@c766421\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1518686539180_1663093342",
+      "id": "20180215-012219_189818735",
+      "dateCreated": "Feb 15, 2018 1:22:19 AM",
+      "dateStarted": "Feb 19, 2018 2:42:28 AM",
+      "dateFinished": "Feb 19, 2018 2:43:11 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n\n## Zepplin",
+      "user": "anonymous",
+      "dateUpdated": "Feb 15, 2018 3:35:58 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": false,
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch2\u003eZepplin\u003c/h2\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1518686884114_-1819377867",
+      "id": "20180215-012804_1707642261",
+      "dateCreated": "Feb 15, 2018 1:28:04 AM",
+      "dateStarted": "Feb 15, 2018 3:35:54 AM",
+      "dateFinished": "Feb 15, 2018 3:35:56 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n\nfrom pyspark.sql import HiveContext\n\nhc \u003d HiveContext(sc)\n\nhc.sql(\"show databases\").show()",
+      "user": "anonymous",
+      "dateUpdated": "Feb 19, 2018 3:18:51 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+--------+\n|  result|\n+--------+\n| default|\n|zeppelin|\n+--------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1518688126530_-1629907908",
+      "id": "20180215-014846_242568281",
+      "dateCreated": "Feb 15, 2018 1:48:46 AM",
+      "dateStarted": "Feb 19, 2018 3:18:51 AM",
+      "dateFinished": "Feb 19, 2018 3:18:58 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1519037322318_-508310704",
+      "id": "20180219-024842_301423039",
+      "dateCreated": "Feb 19, 2018 2:48:42 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "~Trash/test",
+  "id": "2D6DPRZWM",
+  "angularObjects": {
+    "2D8YST44Q:shared_process": [],
+    "2D5NEKACD:shared_process": [],
+    "2D78MJMJ8:shared_process": [],
+    "2D6S9AZBV:shared_process": [],
+    "2D6J9P331:shared_process": [],
+    "2D69DCA51:shared_process": [],
+    "2D5RQMZNF:shared_process": [],
+    "2D5NCQX94:shared_process": [],
+    "2D78X28BR:shared_process": [],
+    "2D6EDPEV7:shared_process": [],
+    "2D6KYQ1JZ:shared_process": [],
+    "2D5FSYRWA:shared_process": [],
+    "2D71SGCS3:shared_process": [],
+    "2D8FSEPU6:shared_process": [],
+    "2D7DCUW2A:shared_process": [],
+    "2D81WJGBZ:shared_process": [],
+    "2D767KM18:shared_process": [],
+    "2D8YQ3A7W:shared_process": [],
+    "2D8Z2R4XC:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

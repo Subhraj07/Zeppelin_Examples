@@ -1,0 +1,259 @@
+{
+  "paragraphs": [
+    {
+      "title": "Data Lease Expired - records from the Tax 2015 Table",
+      "text": "%jdbc(hive)\nselect * from finance.tax_2015 limit 10",
+      "dateUpdated": "Feb 19, 2018 3:37:08 AM",
+      "config": {
+        "enabled": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 163.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "tax_2015.ssn",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "tax_2015.fed_tax",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "scatter": {
+                "xAxis": {
+                  "name": "tax_2015.ssn",
+                  "index": 0.0,
+                  "aggr": "sum"
+                },
+                "yAxis": {
+                  "name": "tax_2015.fed_tax",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "tax_2015.ssn\ttax_2015.fed_tax\ttax_2015.state_tax\ttax_2015.local_tax\n123-45-6789\t22575\t5750\t2375\n234-56-7890\t31114\t8765\t2346\n345-67-8901\t35609\t10123\t3421\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040228297_547019947",
+      "id": "20160923-074955_889514713",
+      "dateCreated": "Feb 19, 2018 3:37:08 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%jdbc(hive)\nselect * from hortoniabank.ww_customers\nlimit 10",
+      "dateUpdated": "Feb 19, 2018 3:37:08 AM",
+      "config": {
+        "enabled": true,
+        "tableHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "ww_customers.gender",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "ww_customers.title",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "scatter": {
+                "xAxis": {
+                  "name": "ww_customers.gender",
+                  "index": 0.0,
+                  "aggr": "sum"
+                },
+                "yAxis": {
+                  "name": "ww_customers.title",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "ww_customers.gender\tww_customers.title\tww_customers.givenname\tww_customers.middleinitial\tww_customers.surname\tww_customers.number\tww_customers.nameset\tww_customers.streetaddress\tww_customers.city\tww_customers.state\tww_customers.statefull\tww_customers.zipcode\tww_customers.country\tww_customers.countryfull\tww_customers.emailaddress\tww_customers.username\tww_customers.password\tww_customers.telephonenumber\tww_customers.telephonecountrycode\tww_customers.mothersmaiden\tww_customers.birthday\tww_customers.age\tww_customers.tropicalzodiac\tww_customers.cctype\tww_customers.ccnumber\tww_customers.cvv2\tww_customers.ccexpires\tww_customers.nationalid\tww_customers.mrn\tww_customers.insuranceid\tww_customers.eyecolor\tww_customers.occupation\tww_customers.company\tww_customers.vehicle\tww_customers.domain\tww_customers.bloodtype\tww_customers.weight\tww_customers.height\tww_customers.latitude\tww_customers.longitude\nfemale\tMs.\tCaroline\tM\tSchultz\t56\tDanish\t4356 Twin House Lane\tSpringfield\tMO\tMissouri\t65806\tUS\tUnited States\tCarolineMSchultz@einrot.com\tFultentreske\tVeech2vaegh\t417-425-7363\t1\tJensen\t09/04/95\t20\tVirgo\tMasterCard\t5451352623217470\t353\t05/01/21\t489-17-6563\t1797839831\t60919608\tOrange\tTalking-books clerk\tMegatronic\t1997 SsangYong Chairman H\tlookwellsarees.com\tAB-\t161.3\t151\t37.249347\t-93.349751\nmale\tMr.\tNur al Din\tS\tIssa\t87\tArabic\t3418 Veltri Drive\tAnchorage\tAK\tAlaska\t99503\tUS\tUnited States\tNuralDinSammanIssa@cuvox.de\tFoody1980\tOejo2Oseelo\t907-271-4448\t1\tMaloof\t12/29/80\t35\tCapricorn\tVisa\t4539922472961940\t110\t09/01/18\t574-56-3076\t3533276603\t54503321\tBlue\tFinance officer\tBay Furniture\t2005 Alpina B7\thealthlessness.com\tO+\t172.9\t178\t61.192213\t-149.809231\nfemale\tMrs.\tگلسا\tم\tجوادیان\t97\tPersian\t4676 Renwick Drive\tEagleville\tPA\tPennsylvania\t19403\tUS\tUnited States\tGulesaJewadaan@cuvox.de\tCiat1933\tohle2iPhai\t484-347-7511\t1\tطایی\t12/04/33\t82\tSagittarius\tMasterCard\t5123446611064170\t774\t04/01/18\t177-70-5879\t1465684417\t27448971\tRed\tFire prevention specialist\tLoblaws\t1999 Infiniti I\tmatomesq.com\tO+\t155.5\t167\t40.096981\t-75.335425\nfemale\tDr.\tÚt\tT\tChu\t144\tVietnamese\t4922 Godfrey Road\tNew York\tNY\tNew York\t10007\tUS\tUnited States\tChuThiAiUt@armyspy.com\tCarnall\tboop3shahL9\t212-577-5840\t1\tVõ\t01/05/74\t42\tCapricorn\tVisa\t4539703711870490\t711\t12/01/19\t076-34-1080\t8013885100\t2777376\tBlue\tCost/investment recovery technician\tRuehl No. 925\t1998 Nissan Sentra\teknywork.com\tB+\t193.2\t161\t40.623107\t-73.947514\nfemale\tMrs.\tZemfira\tM\tGolubova\t178\tRussian\t355 Cedar Lane\tFort Washington\tMA\tMassachusetts\t19034\tUS\tUnited States\tZemfiraGolubova@jourrapide.com\tArte1957\tSiep7id0j\t617-595-9400\t1\t\t06/02/57\t59\tGemini\tVisa\t4929116367060030\t70\t12/01/18\t014-34-5337\t531769338\t49790971\tYellow\tASE teacher\tNational Auto Parts\t2006 Volkswagen Citi\tissmalta.com\tA+\t153.8\t169\t40.230244\t-75.138723\nfemale\tMs.\tAzra\tE\tStevanić\t188\tSlovenian\t2128 Ashton Lane\tLampasas\tTX\tTexas\t76550\tUS\tUnited States\tAzraStevanic@teleworm.us\tTrece1991\tKaeWaoH7\t512-566-6936\t1\tButko\t01/20/91\t25\tAquarius\tVisa\t4485001410516240\t229\t11/01/18\t639-32-1560\t1356366532\t32877674\tBlue\tHVAC technician\tMulti Tech Development\t2009 Jeep Grand Cherokee\tjszexpress.com\tB+\t126.7\t157\t31.075452\t-98.219883\nfemale\tMs.\tMargherita\tA\tPiccio\t193\tItalian\t1860 Spring Haven Trail\tNewark\tNJ\tNew Jersey\t7102\tUS\tUnited States\tMargheritaPiccio@fleckens.hu\tEling1976\tkif9yoh3Fie\t973-710-6963\t1\tToscano\t01/17/76\t40\tCapricorn\tVisa\t4539834388519250\t459\t10/01/18\t146-32-3384\t6720811272\t17372133\tBlue\tElectrical and electronics installer\tAdvansed Teksyztems\t2008 Pagani Zonda\tlizzyclaire.com\tO+\t165.2\t158\t40.732995\t-74.136429\nmale\tMr.\tBirk\tM\tRasmussen\t278\tNorwegian\t4208 Cedarstone Drive\tToledo\tOH\tOhio\t43613\tUS\tUnited States\tBirkRasmussen@gustr.com\tWrife1936\tRooquai7\t419-472-7093\t1\tJensrud\t06/21/36\t79\tCancer\tMasterCard\t5589057402947350\t83\t10/01/21\t293-76-0358\t387262813\t54335239\tBlack\tGeoscientist\tSambo\u0027s\t1998 Alfa Romeo Spider\tnarkopult.com\tO+\t167.4\t181\t41.792938\t-83.53835\nmale\tMr.\tJai\tM\tMcCorkindale\t280\tAustralian\t2545 Jacobs Street\tPittsburgh\tPA\tPennsylvania\t15238\tUS\tUnited States\tJaiMcCorkindale@rhyta.com\tWoution81\ttae6aiTh\t412-340-9805\t1\tBaskerville\t08/08/81\t34\tLeo\tMasterCard\t5535973815537750\t944\t08/01/18\t198-36-2784\t1825238806\t35817717\tRed\tElevator constructor\tDruther\u0027s\t1992 Volvo 850\tonionbeats.com\tA+\t195.8\t188\t40.482349\t-79.830391\nmale\tMr.\tJonas\tE\tJohansen\t319\tNorwegian\t201 Oxford Court\tHolly Springs\tMS\tMississippi\t38635\tUS\tUnited States\tJonasJohansen@fleckens.hu\tBary1960\tPu5hoogee7ee\t662-252-2712\t1\tStrand\t07/04/60\t55\tCancer\tMasterCard\t5501536916949120\t256\t06/01/17\t425-35-7124\t58852029\t40408138\tGreen\tLandscape contractor\tRickel\t2010 Pontiac G3\tmykidssupport.com\tB+\t205.3\t183\t34.728741\t-89.500476\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040228299_547789445",
+      "id": "20160923-075040_806201705",
+      "dateCreated": "Feb 19, 2018 3:37:08 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%jdbc(hive)\nSELECT emp_id, location, ts_date, hours, Revenue, Revenue_per_hr FROM default.timesheets_test",
+      "dateUpdated": "Feb 19, 2018 3:37:08 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "emp_id",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "location",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "scatter": {
+                "xAxis": {
+                  "name": "emp_id",
+                  "index": 0.0,
+                  "aggr": "sum"
+                },
+                "yAxis": {
+                  "name": "location",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Error while compiling statement: FAILED: HiveAccessControlException Permission denied: user [compliance-admin] does not have [SELECT] privilege on [default/timesheets_test/emp_id,hours,location,revenue,revenue_per_hr,ts_date]\nclass org.apache.hive.service.cli.HiveSQLException\norg.apache.hive.jdbc.Utils.verifySuccess(Utils.java:258)\norg.apache.hive.jdbc.Utils.verifySuccessWithInfo(Utils.java:244)\norg.apache.hive.jdbc.HiveStatement.execute(HiveStatement.java:247)\norg.apache.zeppelin.jdbc.JDBCInterpreter.executeSql(JDBCInterpreter.java:356)\norg.apache.zeppelin.jdbc.JDBCInterpreter.interpret(JDBCInterpreter.java:442)\norg.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:94)\norg.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:341)\norg.apache.zeppelin.scheduler.Job.run(Job.java:176)\norg.apache.zeppelin.scheduler.ParallelScheduler$JobRunner.run(ParallelScheduler.java:162)\njava.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)\njava.util.concurrent.FutureTask.run(FutureTask.java:266)\njava.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)\njava.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)\njava.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)\njava.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)\njava.lang.Thread.run(Thread.java:745)"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040228299_547789445",
+      "id": "20160925-044309_836394324",
+      "dateCreated": "Feb 19, 2018 3:37:08 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "dateUpdated": "Feb 19, 2018 3:37:08 AM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040228299_547789445",
+      "id": "20160923-080610_1981371448",
+      "dateCreated": "Feb 19, 2018 3:37:08 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Demos / Security / HortoniaBank / HortoniaBank - Compliance Admin View",
+  "id": "2D8D2H74N",
+  "angularObjects": {
+    "2D6KMVEJB:shared_process": [],
+    "2D8YST44Q:shared_process": [],
+    "2D5NEKACD:shared_process": [],
+    "2D78MJMJ8:shared_process": [],
+    "2D6S9AZBV:shared_process": [],
+    "2D6J9P331:shared_process": [],
+    "2D69DCA51:shared_process": [],
+    "2D5RQMZNF:shared_process": [],
+    "2D5NCQX94:shared_process": [],
+    "2D78X28BR:shared_process": [],
+    "2D6EDPEV7:shared_process": [],
+    "2D6KYQ1JZ:shared_process": [],
+    "2D71SGCS3:shared_process": [],
+    "2D5FSYRWA:shared_process": [],
+    "2D8FSEPU6:shared_process": [],
+    "2D7DCUW2A:shared_process": [],
+    "2D81WJGBZ:shared_process": [],
+    "2D6PQ5G9Q:shared_process": [],
+    "2D767KM18:shared_process": [],
+    "2D8YQ3A7W:shared_process": [],
+    "2D8Z2R4XC:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

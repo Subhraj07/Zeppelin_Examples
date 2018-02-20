@@ -1,0 +1,280 @@
+{
+  "paragraphs": [
+    {
+      "title": "Query us_customers table as ivanna_eu_hr (Denied)",
+      "text": "%sh\nbeeline -n ivanna_eu_hr -u \"jdbc:hive2://$(hostname -f):2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\" \\\n-e  \"SELECT surname, streetaddress, country, age, password, nationalid, ccnumber, mrn, birthday FROM hortoniabank.us_customers LIMIT  10\"",
+      "dateUpdated": "Feb 19, 2018 3:38:03 AM",
+      "config": {
+        "enabled": true,
+        "title": true,
+        "editorMode": "ace/mode/sh",
+        "results": {},
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sh"
+        },
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Connecting to jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\nConnected to: Apache Hive (version 1.2.1000.2.6.1.0-129)\nDriver: Hive JDBC (version 1.2.1000.2.6.1.0-129)\nTransaction isolation: TRANSACTION_REPEATABLE_READ\nError: Error while compiling statement: FAILED: HiveAccessControlException Permission denied: user [ivanna_eu_hr] does not have [SELECT] privilege on [hortoniabank/us_customers/*] (state\u003d42000,code\u003d40000)\nClosing: 0: jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\n"
+          },
+          {
+            "type": "TEXT",
+            "data": "ExitValue: 1"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040283766_2007819576",
+      "id": "20170621-050801_2068855633",
+      "dateCreated": "Feb 19, 2018 3:38:03 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Query us_customers table as joe_analyst (Columns masked)",
+      "text": "%sh\nbeeline -n joe_analyst -u \"jdbc:hive2://$(hostname -f):2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\"  \\\n-e \"SELECT surname, streetaddress, country, age, password, nationalid, ccnumber, mrn, birthday FROM hortoniabank.us_customers LIMIT  10\"\n",
+      "dateUpdated": "Feb 19, 2018 3:38:03 AM",
+      "config": {
+        "enabled": true,
+        "title": true,
+        "editorMode": "ace/mode/sh",
+        "results": {},
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sh"
+        },
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Connecting to jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\nConnected to: Apache Hive (version 1.2.1000.2.6.1.0-129)\nDriver: Hive JDBC (version 1.2.1000.2.6.1.0-129)\nTransaction isolation: TRANSACTION_REPEATABLE_READ\n+------------+-----------------------+----------+------+-----------------------------------+--------------+--------------+-------+-------------+--+\n|  surname   |     streetaddress     | country  | age  |             password              |  nationalid  |   ccnumber   |  mrn  |  birthday   |\n+------------+-----------------------+----------+------+-----------------------------------+--------------+--------------+-------+-------------+--+\n| Powers     | nnnn Xxxxxxxx Xxxxx   | US       | 56   | 94ffd65a44c3e687acd02e1505252a67  | 152-44-3016  | x.xxxxxE+15  | NULL  | 01-01-1973  |\n| Whitman    | nnnn Xxxxxxx Xxxxx    | US       | 49   | 1e1ecfa7a73510ff67c68a8b3a885c84  | 264-16-8255  | x.xxxxxE+15  | NULL  | 01-01-1977  |\n| Marone     | nnn Xxxxx Xxxxx       | US       | 55   | 09d628024cc60a249915154ce91a7738  | 551-59-6142  | x.xxxxxE+15  | NULL  | 01-01-1977  |\n| Harp       | nnnn Xxx Xxxx Xxxx    | US       | 23   | d7be19d6fd7300c1d5caf6c628c2d584  | 350-54-4018  | x.xxxxxE+15  | NULL  | 01-01-1997  |\n| Pereira    | nnnn Xxxxxxxx Xxxxxx  | US       | 86   | 3c4f5f537a9b533dba234baa43a0a5fd  | 550-83-1927  | x.xxxxxE+15  | NULL  | 01-01-1938  |\n| Blackburn  | nnn Xxxxxxx Xxxx      | US       | 58   | 2ce7e2d61505161888fa154328a2bf75  | 604-88-7903  | x.xxxxxE+15  | NULL  | 01-01-1965  |\n| Gonzalez   | nnnn Xxxxx Xxxx       | US       | 24   | 6082455e5d7d7055ca77088aff15075b  | 522-25-2582  | x.xxxxxE+15  | NULL  | 01-01-1995  |\n| Helton     | nnnn Xxxxxxx Xxxxx    | US       | 62   | 9abf755bf7b69a9a6381b37e6ba96028  | 029-52-4291  | x.xxxxxE+15  | NULL  | 01-01-1975  |\n| Mei        | nnn Xxxxx Xxxxxx      | US       | 83   | 156be6018ef5288da1dd77a891d10a8c  | 473-33-8366  | x.xxxxxE+15  | NULL  | 01-01-1941  |\n| Goldberg   | nnnn Xxxxx Xxxxx      | US       | 83   | ab8ab22dea8ee912a0227e9559342779  | 272-74-4937  | x.xxxxxE+15  | NULL  | 01-01-1944  |\n+------------+-----------------------+----------+------+-----------------------------------+--------------+--------------+-------+-------------+--+\n10 rows selected (0.386 seconds)\nBeeline version 1.2.1000.2.6.1.0-129 by Apache Hive\nClosing: 0: jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040283816_2073226889",
+      "id": "20170621-050805_327522969",
+      "dateCreated": "Feb 19, 2018 3:38:03 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Query us_customers table as admin (Raw data)",
+      "text": "%sh\nbeeline -n diane_csr -u \"jdbc:hive2://$(hostname -f):2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\" \\\n-e \"SELECT surname, streetaddress, country, age, password, nationalid, ccnumber, mrn, birthday FROM hortoniabank.us_customers LIMIT  10\"\n",
+      "dateUpdated": "Feb 19, 2018 3:38:03 AM",
+      "config": {
+        "enabled": true,
+        "title": true,
+        "editorMode": "ace/mode/sh",
+        "results": {},
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sh"
+        },
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Connecting to jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\nConnected to: Apache Hive (version 1.2.1000.2.6.1.0-129)\nDriver: Hive JDBC (version 1.2.1000.2.6.1.0-129)\nTransaction isolation: TRANSACTION_REPEATABLE_READ\n+------------+-----------------------+----------+------+----------------+--------------+--------------+-------------+-----------+--+\n|  surname   |     streetaddress     | country  | age  |    password    |  nationalid  |   ccnumber   |     mrn     | birthday  |\n+------------+-----------------------+----------+------+----------------+--------------+--------------+-------------+-----------+--+\n| Powers     | 2432 American Drive   | US       | 42   | Caetahphei4ie  | 152-44-3016  | 5.49918E+15  | 4372094101  | 11/6/73   |\n| Whitman    | 4332 Kenwood Place    | US       | 41   | oph6hai7Tah    | 264-16-8255  | 4.55635E+15  | 8476180071  | 5/26/75   |\n| Marone     | 380 Freed Drive       | US       | 39   | daiyav0Kiexue  | 551-59-6142  | 4.53296E+15  | 3462371211  | 10/17/76  |\n| Harp       | 1041 Hog Camp Road    | US       | 20   | feiheH5hai     | 350-54-4018  | 5.20555E+15  | 3899353090  | 2/21/96   |\n| Pereira    | 3926 Williams Avenue  | US       | 78   | theoXoo3       | 550-83-1927  | 5.38019E+15  | 8421030803  | 6/1/38    |\n| Blackburn  | 144 Thunder Road      | US       | 50   | eeQuaiG3uish   | 604-88-7903  | 5.53111E+15  | 4052460547  | 7/5/65    |\n| Gonzalez   | 4996 Logan Lane       | US       | 22   | tenaBu1kahch   | 522-25-2582  | 4.71613E+15  | 7896963213  | 11/25/93  |\n| Helton     | 3943 Kennedy Court    | US       | 43   | aekeePh4b      | 029-52-4291  | 5.25193E+15  | 4774817819  | 3/29/73   |\n| Mei        | 995 Bryan Avenue      | US       | 77   | The4aetiesh    | 473-33-8366  | 5.20883E+15  | 8306236849  | 3/30/39   |\n| Goldberg   | 3586 Lowes Alley      | US       | 73   | eiY9shahth     | 272-74-4937  | 4.55671E+15  | 5307884989  | 8/25/42   |\n+------------+-----------------------+----------+------+----------------+--------------+--------------+-------------+-----------+--+\n10 rows selected (0.306 seconds)\nBeeline version 1.2.1000.2.6.1.0-129 by Apache Hive\nClosing: 0: jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040283817_2072842140",
+      "id": "20170621-051445_250708725",
+      "dateCreated": "Feb 19, 2018 3:38:03 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Query prohibition",
+      "text": "%sh\nbeeline -n joe_analyst -u \"jdbc:hive2://$(hostname -f):2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\" \\\n-e \"select zipcode, mrn, bloodtype from hortoniabank.ww_customers limit 10\"",
+      "dateUpdated": "Feb 19, 2018 3:38:03 AM",
+      "config": {
+        "enabled": true,
+        "title": true,
+        "editorMode": "ace/mode/sh",
+        "results": {},
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sh"
+        },
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Connecting to jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\nConnected to: Apache Hive (version 1.2.1000.2.6.1.0-129)\nDriver: Hive JDBC (version 1.2.1000.2.6.1.0-129)\nTransaction isolation: TRANSACTION_REPEATABLE_READ\nError: Error while compiling statement: FAILED: HiveAccessControlException Permission denied: user [joe_analyst] does not have [SELECT] privilege on [hortoniabank/ww_customers/*] (state\u003d42000,code\u003d40000)\nClosing: 0: jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\n"
+          },
+          {
+            "type": "TEXT",
+            "data": "ExitValue: 1"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040283818_2073996387",
+      "id": "20170621-051518_771116063",
+      "dateCreated": "Feb 19, 2018 3:38:03 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Query ww_customers tables as joe_analyst (only sees US data)",
+      "text": "%sh\nbeeline -n joe_analyst -u \"jdbc:hive2://$(hostname -f):2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\" \\\n-e \"select * from \n(select countryfull, count(*) num_customers from hortoniabank.ww_customers\ngroup by countryfull) s\norder by num_customers desc\nlimit 5\"",
+      "dateUpdated": "Feb 19, 2018 3:38:03 AM",
+      "config": {
+        "enabled": true,
+        "title": true,
+        "editorMode": "ace/mode/sh",
+        "results": {},
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sh"
+        },
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Connecting to jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\nConnected to: Apache Hive (version 1.2.1000.2.6.1.0-129)\nDriver: Hive JDBC (version 1.2.1000.2.6.1.0-129)\nTransaction isolation: TRANSACTION_REPEATABLE_READ\nINFO  : Tez session hasn\u0027t been created yet. Opening session\nINFO  : Dag name: select * from \n(select countryfull, coun...5(Stage-1)\nINFO  : Status: Running (Executing on YARN cluster with App id application_1498017647602_0008)\n\n\u001b[2K--------------------------------------------------------------------------------\n\u001b[2K\u001b[36;1m        VERTICES      STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED\n\u001b[22;0m\u001b[2K--------------------------------------------------------------------------------\n\u001b[2KMap 1 ..........   SUCCEEDED      1          1        0        0       0       0\nReducer 2            RUNNING      1          0        1        0       0       0\nReducer 3             INITED      1          0        0        1       0       0\n\u001b[2K--------------------------------------------------------------------------------\n\u001b[2K\u001b[31;1mVERTICES: 01/03  [\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003e\u003e------------------] 33%   ELAPSED TIME: 5.69 s     \n\u001b[22;0m\u001b[2K--------------------------------------------------------------------------------\n\u001b[9A\u001b[2K--------------------------------------------------------------------------------\n\u001b[2K\u001b[36;1m        VERTICES      STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED\n\u001b[22;0m\u001b[2K--------------------------------------------------------------------------------\n\u001b[2KMap 1 ..........   SUCCEEDED      1          1        0        0       0       0\nReducer 2 ......   SUCCEEDED      1          1        0        0       0       0\nReducer 3 ......   SUCCEEDED      1          1        0        0       0       0\n\u001b[2K--------------------------------------------------------------------------------\n\u001b[2K\u001b[31;1mVERTICES: 03/03  [\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003e\u003e] 100%  ELAPSED TIME: 6.69 s     \n\u001b[22;0m\u001b[2K--------------------------------------------------------------------------------\n+----------------+------------------+--+\n| s.countryfull  | s.num_customers  |\n+----------------+------------------+--+\n| United States  | 1628             |\n+----------------+------------------+--+\n1 row selected (13.421 seconds)\nBeeline version 1.2.1000.2.6.1.0-129 by Apache Hive\nClosing: 0: jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040283818_2073996387",
+      "id": "20170621-052146_1873817853",
+      "dateCreated": "Feb 19, 2018 3:38:03 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Query ww_customers tables as ivanna_eu_hr (only sees EU data)",
+      "text": "%sh\nbeeline -n ivanna_eu_hr -u \"jdbc:hive2://$(hostname -f):2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\" \\\n-e \"select * from \n(select countryfull, count(*) num_customers from hortoniabank.ww_customers\ngroup by countryfull) s\norder by num_customers desc\nlimit 5\"\n",
+      "dateUpdated": "Feb 19, 2018 3:38:03 AM",
+      "config": {
+        "enabled": true,
+        "title": true,
+        "editorMode": "ace/mode/sh",
+        "results": {},
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sh"
+        },
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Connecting to jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\nConnected to: Apache Hive (version 1.2.1000.2.6.1.0-129)\nDriver: Hive JDBC (version 1.2.1000.2.6.1.0-129)\nTransaction isolation: TRANSACTION_REPEATABLE_READ\nINFO  : Tez session hasn\u0027t been created yet. Opening session\nINFO  : Dag name: select * from \n(select countryfull, coun...5(Stage-1)\nINFO  : Setting tez.task.scale.memory.reserve-fraction to 0.30000001192092896\nINFO  : Status: Running (Executing on YARN cluster with App id application_1498017647602_0009)\n\n\u001b[2K--------------------------------------------------------------------------------\n\u001b[2K\u001b[36;1m        VERTICES      STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED\n\u001b[22;0m\u001b[2K--------------------------------------------------------------------------------\n\u001b[2KMap 1 ..........   SUCCEEDED      1          1        0        0       0       0\nMap 4 ..........   SUCCEEDED      1          1        0        0       0       0\nReducer 2 ......   SUCCEEDED      1          1        0        0       0       0\nReducer 3            RUNNING      1          0        1        0       0       0\n\u001b[2K--------------------------------------------------------------------------------\n\u001b[2K\u001b[31;1mVERTICES: 03/04  [\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003e\u003e-------] 75%   ELAPSED TIME: 5.76 s     \n\u001b[22;0m\u001b[2K--------------------------------------------------------------------------------\n\u001b[10A\u001b[2K--------------------------------------------------------------------------------\n\u001b[2K\u001b[36;1m        VERTICES      STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED\n\u001b[22;0m\u001b[2K--------------------------------------------------------------------------------\n\u001b[2KMap 1 ..........   SUCCEEDED      1          1        0        0       0       0\nMap 4 ..........   SUCCEEDED      1          1        0        0       0       0\nReducer 2 ......   SUCCEEDED      1          1        0        0       0       0\nReducer 3 ......   SUCCEEDED      1          1        0        0       0       0\n\u001b[2K--------------------------------------------------------------------------------\n\u001b[2K\u001b[31;1mVERTICES: 04/04  [\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003d\u003e\u003e] 100%  ELAPSED TIME: 5.85 s     \n\u001b[22;0m\u001b[2K--------------------------------------------------------------------------------\n+----------------------+------------------+--+\n|    s.countryfull     | s.num_customers  |\n+----------------------+------------------+--+\n| Italy                | 1704             |\n| Spain                | 1676             |\n| Belgium              | 1645             |\n| Denmark              | 1642             |\n| Cyprus (Anglicized)  | 1638             |\n+----------------------+------------------+--+\n5 rows selected (12.536 seconds)\nBeeline version 1.2.1000.2.6.1.0-129 by Apache Hive\nClosing: 0: jdbc:hive2://abajwa-hdp26-hortonia0.field.hortonworks.com:2181/;serviceDiscoveryMode\u003dzooKeeper;zooKeeperNamespace\u003dhiveserver2\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040283819_2073611638",
+      "id": "20170621-052313_959631648",
+      "dateCreated": "Feb 19, 2018 3:38:03 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\n",
+      "dateUpdated": "Feb 19, 2018 3:38:03 AM",
+      "config": {
+        "enabled": true,
+        "editorMode": "ace/mode/sh",
+        "results": {},
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sh"
+        },
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040283819_2073611638",
+      "id": "20170621-052546_110532319",
+      "dateCreated": "Feb 19, 2018 3:38:03 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Demos / Security / HortoniaBank / Hortoniabank - run through shell",
+  "id": "2D6HNUHN5",
+  "angularObjects": {
+    "2D6KMVEJB:shared_process": [],
+    "2D8YST44Q:shared_process": [],
+    "2D5NEKACD:shared_process": [],
+    "2D78MJMJ8:shared_process": [],
+    "2D6S9AZBV:shared_process": [],
+    "2D6J9P331:shared_process": [],
+    "2D69DCA51:shared_process": [],
+    "2D5RQMZNF:shared_process": [],
+    "2D5NCQX94:shared_process": [],
+    "2D78X28BR:shared_process": [],
+    "2D6EDPEV7:shared_process": [],
+    "2D6KYQ1JZ:shared_process": [],
+    "2D71SGCS3:shared_process": [],
+    "2D5FSYRWA:shared_process": [],
+    "2D8FSEPU6:shared_process": [],
+    "2D7DCUW2A:shared_process": [],
+    "2D81WJGBZ:shared_process": [],
+    "2D6PQ5G9Q:shared_process": [],
+    "2D767KM18:shared_process": [],
+    "2D8YQ3A7W:shared_process": [],
+    "2D8Z2R4XC:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

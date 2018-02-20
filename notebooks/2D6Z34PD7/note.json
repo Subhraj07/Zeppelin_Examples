@@ -1,0 +1,151 @@
+{
+  "paragraphs": [
+    {
+      "title": "Download Text Data on Apache NiFi",
+      "text": "%sh wget https://raw.githubusercontent.com/roberthryniewicz/datasets/master/About-Apache-NiFi.txt -O /tmp/nifi.txt",
+      "dateUpdated": "Feb 19, 2018 3:36:19 AM",
+      "config": {
+        "enabled": true,
+        "title": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/sh",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040179713_-1420863408",
+      "id": "20160226-194945_2037625547",
+      "dateCreated": "Feb 19, 2018 3:36:19 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Move downloaded text to HDFS",
+      "text": "%sh\n\n# Remove existing copy of data from HDFS\nhadoop fs -rm -f /tmp/nifi.txt\n\n# Move latest text data to HDFS\nhadoop fs -put /tmp/nifi.txt /tmp",
+      "dateUpdated": "Feb 19, 2018 3:36:19 AM",
+      "config": {
+        "enabled": true,
+        "title": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/sh",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040179715_-1420093910",
+      "id": "20160226-200603_237571112",
+      "dateCreated": "Feb 19, 2018 3:36:19 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Count the number of non-empty lines",
+      "text": "%pyspark\n\n# Create an RDD from text file in HDFS\nmyLines \u003d sc.textFile(\u0027hdfs:///tmp/nifi.txt\u0027)\n\n# Filter out empty lines\nmyLinesFiltered \u003d myLines.filter( lambda x: len(x) \u003e 0 )\n\n# Count number of non-empty lines\ncount \u003d myLinesFiltered.count()\nprint count",
+      "dateUpdated": "Feb 19, 2018 3:36:19 AM",
+      "config": {
+        "enabled": true,
+        "title": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040179715_-1420093910",
+      "id": "20160226-200626_1038350828",
+      "dateCreated": "Feb 19, 2018 3:36:19 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "dateUpdated": "Feb 19, 2018 3:36:19 AM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040179715_-1420093910",
+      "id": "20160226-200649_425588199",
+      "dateCreated": "Feb 19, 2018 3:36:19 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Getting Started / Apache Spark in 5 Minutes",
+  "id": "2D6Z34PD7",
+  "angularObjects": {
+    "2D6KMVEJB:shared_process": [],
+    "2D8YST44Q:shared_process": [],
+    "2D5NEKACD:shared_process": [],
+    "2D78MJMJ8:shared_process": [],
+    "2D6S9AZBV:shared_process": [],
+    "2D6J9P331:shared_process": [],
+    "2D69DCA51:shared_process": [],
+    "2D5RQMZNF:shared_process": [],
+    "2D5NCQX94:shared_process": [],
+    "2D78X28BR:shared_process": [],
+    "2D6EDPEV7:shared_process": [],
+    "2D6KYQ1JZ:shared_process": [],
+    "2D71SGCS3:shared_process": [],
+    "2D5FSYRWA:shared_process": [],
+    "2D8FSEPU6:shared_process": [],
+    "2D7DCUW2A:shared_process": [],
+    "2D81WJGBZ:shared_process": [],
+    "2D6PQ5G9Q:shared_process": [],
+    "2D767KM18:shared_process": [],
+    "2D8YQ3A7W:shared_process": [],
+    "2D8Z2R4XC:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

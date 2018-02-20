@@ -1,0 +1,2678 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n#Analyzing network intrusion dataset with Python and Spark\n###By [Saptak Sen](http://saptak.in)\n---\n\n###Introduction\n\nIn this tutorial we are going to analyze a network intrusion events dataset with **Python** in a Zeppelin Notebook. The Zeppelin Notebook provides an easy and interactive surface for data scientists to explore data through data processing engines like **Hive** and **Spark**. Hive and Spark in turn benefit from robust managability, resource allocation policies, security and scalability running on a YARN managed infrasturcture.\n\n```\n                                                                  ┏━━━━━━━━━━━━━━━━━━━━━┓\n                                                                  ┃                     ┃\n                                                                  ┃      Executer       ┃\n           ┌─────────────────────────────────────────────────────▶┃     Cache, Task     ┃\n           │                                                      ┃                     ┃\n           │                                                      ┃                     ┃\n           │                                                      ┗━━━━━━━━━━━━━━━━━━━━━┛\n           │\n           │\n           │\n┏━━━━━━━━━━━━━━━━━━━━━┓          ┏━━━━━━━━━━━━━━━━━━━━━┓          ┏━━━━━━━━━━━━━━━━━━━━━┓\n┃                     ┃          ┃                     ┃          ┃                     ┃\n┃       Driver        ┃          ┃   Cluster Manager   ┃          ┃      Executer       ┃\n┃    Spark Context    ┃─────────▶┃       (YARN)        ┃─────────▶┃     Cache, Task     ┃\n┃                     ┃          ┃                     ┃          ┃                     ┃\n┃                     ┃          ┃                     ┃          ┃                     ┃\n┗━━━━━━━━━━━━━━━━━━━━━┛          ┗━━━━━━━━━━━━━━━━━━━━━┛          ┗━━━━━━━━━━━━━━━━━━━━━┛\n           │\n           │\n           │\n           │                                                      ┏━━━━━━━━━━━━━━━━━━━━━┓\n           │                                                      ┃                     ┃\n           │                                                      ┃      Executer       ┃\n           └─────────────────────────────────────────────────────▶┃     Cache, Task     ┃\n                                                                  ┃                     ┃\n                                                                  ┃                     ┃\n                                                                  ┗━━━━━━━━━━━━━━━━━━━━━┛\n```\n\n###Resilient Distributed Dataset\nThe key concept in Spark are RDDs or Resilient Distributed Datasets.RDD is a fault-tolerant collection of elements that can be operated on in parallel.\n \n\n###Spark Application\nA typical Spark application has the following four phases:\n\n```\n┏━━━━━━━━━━━━━━━━━━━━━━━┓\n┃                       ┃\n┃      Instantiate      ┃\n┃      Input RDDs       ┃\n┃                       ┃\n┗━━━━━━━━━━━┳━━━━━━━━━━━┛\n            │\n            │\n┏━━━━━━━━━━━▼━━━━━━━━━━━┓\n┃                       ┃\n┃    Transform RDDs     ┃\n┃                       ┃\n┃                       ┃\n┗━━━━━━━━━━━┳━━━━━━━━━━━┛\n            │\n            │\n┏━━━━━━━━━━━▼━━━━━━━━━━━┓\n┃                       ┃\n┃        Persist        ┃\n┃   Intermediate RDDs   ┃\n┃                       ┃\n┗━━━━━━━━━━━┳━━━━━━━━━━━┛\n            │\n            │\n┏━━━━━━━━━━━▼━━━━━━━━━━━┓\n┃                       ┃\n┃    Action on RDDs     ┃\n┃                       ┃\n┃                       ┃\n┗━━━━━━━━━━━━━━━━━━━━━━━┛\n```\n\n###Commenting with Markdown\n\nThis block of comments and instructions is formatted as [Markdown](https://help.github.com/articles/github-flavored-markdown/). Every block of code or comments in Zeppelin is also often referred to as a paragraph. \n\nA block formatted as markdown can be specified when we start the block with `%md`. Any block is executed and rendered when we click the play button on the top-left-hand corner of a block.\n\n###Downloading the Data with Shell commands\n\nIn the next block of code we are going to download the data using shell commands. The shell command in a Zeppelin notebook can be invoked when we prepend the block of shell commands with a line containing the characters `%sh`.",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "tableHide": false,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch1\u003eAnalyzing network intrusion dataset with Python and Spark\u003c/h1\u003e\n\u003ch3\u003eBy \u003ca href\u003d\"http://saptak.in\"\u003eSaptak Sen\u003c/a\u003e\u003c/h3\u003e\n\u003chr /\u003e\n\u003ch3\u003eIntroduction\u003c/h3\u003e\n\u003cp\u003eIn this tutorial we are going to analyze a network intrusion events dataset with \u003cstrong\u003ePython\u003c/strong\u003e in a Zeppelin Notebook. The Zeppelin Notebook provides an easy and interactive surface for data scientists to explore data through data processing engines like \u003cstrong\u003eHive\u003c/strong\u003e and \u003cstrong\u003eSpark\u003c/strong\u003e. Hive and Spark in turn benefit from robust managability, resource allocation policies, security and scalability running on a YARN managed infrasturcture.\u003c/p\u003e\n\u003cpre\u003e\u003ccode\u003e                                                                  ┏━━━━━━━━━━━━━━━━━━━━━┓\n                                                                  ┃                     ┃\n                                                                  ┃      Executer       ┃\n           ┌─────────────────────────────────────────────────────▶┃     Cache, Task     ┃\n           │                                                      ┃                     ┃\n           │                                                      ┃                     ┃\n           │                                                      ┗━━━━━━━━━━━━━━━━━━━━━┛\n           │\n           │\n           │\n┏━━━━━━━━━━━━━━━━━━━━━┓          ┏━━━━━━━━━━━━━━━━━━━━━┓          ┏━━━━━━━━━━━━━━━━━━━━━┓\n┃                     ┃          ┃                     ┃          ┃                     ┃\n┃       Driver        ┃          ┃   Cluster Manager   ┃          ┃      Executer       ┃\n┃    Spark Context    ┃─────────▶┃       (YARN)        ┃─────────▶┃     Cache, Task     ┃\n┃                     ┃          ┃                     ┃          ┃                     ┃\n┃                     ┃          ┃                     ┃          ┃                     ┃\n┗━━━━━━━━━━━━━━━━━━━━━┛          ┗━━━━━━━━━━━━━━━━━━━━━┛          ┗━━━━━━━━━━━━━━━━━━━━━┛\n           │\n           │\n           │\n           │                                                      ┏━━━━━━━━━━━━━━━━━━━━━┓\n           │                                                      ┃                     ┃\n           │                                                      ┃      Executer       ┃\n           └─────────────────────────────────────────────────────▶┃     Cache, Task     ┃\n                                                                  ┃                     ┃\n                                                                  ┃                     ┃\n                                                                  ┗━━━━━━━━━━━━━━━━━━━━━┛\n\u003c/code\u003e\u003c/pre\u003e\n\u003ch3\u003eResilient Distributed Dataset\u003c/h3\u003e\n\u003cp\u003eThe key concept in Spark are RDDs or Resilient Distributed Datasets.RDD is a fault-tolerant collection of elements that can be operated on in parallel.\u003c/p\u003e\n\u003ch3\u003eSpark Application\u003c/h3\u003e\n\u003cp\u003eA typical Spark application has the following four phases:\u003c/p\u003e\n\u003cpre\u003e\u003ccode\u003e┏━━━━━━━━━━━━━━━━━━━━━━━┓\n┃                       ┃\n┃      Instantiate      ┃\n┃      Input RDDs       ┃\n┃                       ┃\n┗━━━━━━━━━━━┳━━━━━━━━━━━┛\n            │\n            │\n┏━━━━━━━━━━━▼━━━━━━━━━━━┓\n┃                       ┃\n┃    Transform RDDs     ┃\n┃                       ┃\n┃                       ┃\n┗━━━━━━━━━━━┳━━━━━━━━━━━┛\n            │\n            │\n┏━━━━━━━━━━━▼━━━━━━━━━━━┓\n┃                       ┃\n┃        Persist        ┃\n┃   Intermediate RDDs   ┃\n┃                       ┃\n┗━━━━━━━━━━━┳━━━━━━━━━━━┛\n            │\n            │\n┏━━━━━━━━━━━▼━━━━━━━━━━━┓\n┃                       ┃\n┃    Action on RDDs     ┃\n┃                       ┃\n┃                       ┃\n┗━━━━━━━━━━━━━━━━━━━━━━━┛\n\u003c/code\u003e\u003c/pre\u003e\n\u003ch3\u003eCommenting with Markdown\u003c/h3\u003e\n\u003cp\u003eThis block of comments and instructions is formatted as \u003ca href\u003d\"https://help.github.com/articles/github-flavored-markdown/\"\u003eMarkdown\u003c/a\u003e. Every block of code or comments in Zeppelin is also often referred to as a paragraph.\u003c/p\u003e\n\u003cp\u003eA block formatted as markdown can be specified when we start the block with \u003ccode\u003e%md\u003c/code\u003e. Any block is executed and rendered when we click the play button on the top-left-hand corner of a block.\u003c/p\u003e\n\u003ch3\u003eDownloading the Data with Shell commands\u003c/h3\u003e\n\u003cp\u003eIn the next block of code we are going to download the data using shell commands. The shell command in a Zeppelin notebook can be invoked when we prepend the block of shell commands with a line containing the characters \u003ccode\u003e%sh\u003c/code\u003e.\u003c/p\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054661_243039312",
+      "id": "20151020-035411_911943644",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\n\n#remove existing copies of dataset from HDFS\nhadoop fs -rm  /tmp/kddcup.data_10_percent.gz\n\n#Download the data and pace it into the /tmp folder of Hortonworks Sandbox\nwget http://kdd.ics.uci.edu/databases/kddcup99/kddcup.data_10_percent.gz -O /tmp/kddcup.data_10_percent.gz\n\n#Copy the data to HDFS on Hortonworks Sandbox\nhadoop fs -put /tmp/kddcup.data_10_percent.gz /tmp\n\n#Verify the data has been copied to the /tmp folder on HDFS\nhadoop fs -ls -h /tmp/kddcup.data_10_percent.gz\n\n#Remove the dataset /tmp folder on the Sandbox local filesystem now that the data has been copied to HDFS\nrm  /tmp/kddcup.data_10_percent.gz\n\n",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "tableHide": false,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/sh",
+        "editorHide": false,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "15/10/25 00:17:07 INFO fs.TrashPolicyDefault: Namenode trash configuration: Deletion interval \u003d 360 minutes, Emptier interval \u003d 0 minutes.\nMoved: \u0027hdfs://sandbox.hortonworks.com:8020/tmp/kddcup.data_10_percent.gz\u0027 to trash at: hdfs://sandbox.hortonworks.com:8020/user/zeppelin/.Trash/Current\n--2015-10-25 00:17:07--  http://kdd.ics.uci.edu/databases/kddcup99/kddcup.data_10_percent.gz\nResolving kdd.ics.uci.edu... 128.195.1.95\nConnecting to kdd.ics.uci.edu|128.195.1.95|:80... connected.\nHTTP request sent, awaiting response... 200 OK\nLength: 2144903 (2.0M) [application/x-gzip]\nSaving to: “/tmp/kddcup.data_10_percent.gz”\n\n     0K .......... .......... .......... .......... ..........  2%  397K 5s\n    50K .......... .......... .......... .......... ..........  4%  531K 4s\n   100K .......... .......... .......... .......... ..........  7%  687K 4s\n   150K .......... .......... .......... .......... ..........  9%  972K 3s\n   200K .......... .......... .......... .......... .......... 11% 1.02M 3s\n   250K .......... .......... .......... .......... .......... 14% 1.16M 3s\n   300K .......... .......... .......... .......... .......... 16% 1.21M 2s\n   350K .......... .......... .......... .......... .......... 19% 1.11M 2s\n   400K .......... .......... .......... .......... .......... 21% 1.52M 2s\n   450K .......... .......... .......... .......... .......... 23% 1.50M 2s\n   500K .......... .......... .......... .......... .......... 26% 1.38M 2s\n   550K .......... .......... .......... .......... .......... 28% 1.42M 2s\n   600K .......... .......... .......... .......... .......... 31% 2.55M 1s\n   650K .......... .......... .......... .......... .......... 33% 2.44M 1s\n   700K .......... .......... .......... .......... .......... 35% 1.83M 1s\n   750K .......... .......... .......... .......... .......... 38% 1.79M 1s\n   800K .......... .......... .......... .......... .......... 40% 2.82M 1s\n   850K .......... .......... .......... .......... .......... 42% 1.39M 1s\n   900K .......... .......... .......... .......... .......... 45% 3.81M 1s\n   950K .......... .......... .......... .......... .......... 47% 2.68M 1s\n  1000K .......... .......... .......... .......... .......... 50% 1.50M 1s\n  1050K .......... .......... .......... .......... .......... 52% 6.88M 1s\n  1100K .......... .......... .......... .......... .......... 54% 1.37M 1s\n  1150K .......... .......... .......... .......... .......... 57% 21.8M 1s\n  1200K .......... .......... .......... .......... .......... 59% 1.40M 1s\n  1250K .......... .......... .......... .......... .......... 62% 16.9M 1s\n  1300K .......... .......... .......... .......... .......... 64% 1.47M 1s\n  1350K .......... .......... .......... .......... .......... 66% 4.43M 0s\n  1400K .......... .......... .......... .......... .......... 69% 10.0M 0s\n  1450K .......... .......... .......... .......... .......... 71% 1.36M 0s\n  1500K .......... .......... .......... .......... .......... 73% 5.31M 0s\n  1550K .......... .......... .......... .......... .......... 76% 2.42M 0s\n  1600K .......... .......... .......... .......... .......... 78% 2.69M 0s\n  1650K .......... .......... .......... .......... .......... 81% 11.1M 0s\n  1700K .......... .......... .......... .......... .......... 83% 2.37M 0s\n  1750K .......... .......... .......... .......... .......... 85% 1.87M 0s\n  1800K .......... .......... .......... .......... .......... 88% 2.80M 0s\n  1850K .......... .......... .......... .......... .......... 90% 1.56M 0s\n  1900K .......... .......... .......... .......... .......... 93% 9.33M 0s\n  1950K .......... .......... .......... .......... .......... 95% 3.72M 0s\n  2000K .......... .......... .......... .......... .......... 97% 1.76M 0s\n  2050K .......... .......... .......... .......... ....      100% 23.7M\u003d1.2s\n\n2015-10-25 00:17:09 (1.67 MB/s) - “/tmp/kddcup.data_10_percent.gz” saved [2144903/2144903]\n\n-rw-r--r--   1 zeppelin hdfs      2.0 M 2015-10-25 00:17 /tmp/kddcup.data_10_percent.gz\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054662_244193559",
+      "id": "20151020-035535_1468713571",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Using Scala function calls to fetch environment variables\n\nIn the next code block we are using function calls in Scala to fetch environment information. To specify a code block as Scala it is enough to just start the code block with `%spark` \n\nWhether you are programming in Scala or Python the important thing to notice is the `sc` object better know as SparkContext.\nSparkContext is created by your driver program in this case Zeppelin and Pyspark. We will use the SparkContext to further instantiate RDDs in the next section.\n",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eUsing Scala function calls to fetch environment variables\u003c/h3\u003e\n\u003cp\u003eIn the next code block we are using function calls in Scala to fetch environment information. To specify a code block as Scala it is enough to just start the code block with \u003ccode\u003e%spark\u003c/code\u003e\u003c/p\u003e\n\u003cp\u003eWhether you are programming in Scala or Python the important thing to notice is the \u003ccode\u003esc\u003c/code\u003e object better know as SparkContext.\n\u003cbr  /\u003eSparkContext is created by your driver program in this case Zeppelin and Pyspark. We will use the SparkContext to further instantiate RDDs in the next section.\u003c/p\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054662_244193559",
+      "id": "20151025-002521_506859008",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nsc.version\nsc.getConf.get(\"spark.home\")\nSystem.getenv().get(\"PYTHONPATH\")\nSystem.getenv().get(\"SPARK_HOME\")",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "res6: String \u003d 1.3.1\nres7: String \u003d /usr/hdp/current/spark-client/\nres8: String \u003d /usr/hdp/current/spark-client//python/lib/py4j-0.8.2.1-src.zip:/usr/hdp/current/spark-client//python/:/usr/hdp/current/spark-client//python\nres9: String \u003d /usr/hdp/2.3.0.0-2557/spark\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054662_244193559",
+      "id": "20151025-000911_681184475",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Creating RDDs\n\nBelow we create a RDD by calling the textFile function on the SparkContext and passing the HDFS path to the raw datset. You can also create RDDs from:\n\n  * JDBC\n  * Cassandra\n  * HBase\n  * Elasticsearch\n  * JSON, CSV, sequence files, object files, ORC, Parquet, Avro\n\nThe code block below starts with `%pyspark` which indicates we are going to use the Python programming language to interact with Spark. Also for the rest of the tutorial we will continue to use PySpark.\n\nWhen we execute the next section of the code block to create the RDDs we will notice that it executes super fast. The reason it executes super fast is because it actually does not touch the data yet. You can continue to apply various transformation operations on this RDD and still it will not touch the data, but only construct a DAG or a Directed Acyclic Graph. \n",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eCreating RDDs\u003c/h3\u003e\n\u003cp\u003eBelow we create a RDD by calling the textFile function on the SparkContext and passing the HDFS path to the raw datset. You can also create RDDs from:\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003eJDBC\u003c/li\u003e\n\u003cli\u003eCassandra\u003c/li\u003e\n\u003cli\u003eHBase\u003c/li\u003e\n\u003cli\u003eElasticsearch\u003c/li\u003e\n\u003cli\u003eJSON, CSV, sequence files, object files, ORC, Parquet, Avro\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003eThe code block below starts with \u003ccode\u003e%pyspark\u003c/code\u003e which indicates we are going to use the Python programming language to interact with Spark. Also for the rest of the tutorial we will continue to use PySpark.\u003c/p\u003e\n\u003cp\u003eWhen we execute the next section of the code block to create the RDDs we will notice that it executes super fast. The reason it executes super fast is because it actually does not touch the data yet. You can continue to apply various transformation operations on this RDD and still it will not touch the data, but only construct a DAG or a Directed Acyclic Graph.\u003c/p\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054663_243808810",
+      "id": "20151025-023520_258833607",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ninput_file \u003d \"hdfs:///tmp/kddcup.data_10_percent.gz\"\n\nraw_rdd \u003d sc.textFile(input_file)",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054663_243808810",
+      "id": "20151020-041058_1023360958",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###RDD Actions\n\nIn the next code block we will count the number of lines in the file by calling the count function on the RDD. Count function on a RDD is a Action operation, which means Spark and YARN will be forced to allocate resource and execute the DAG it has been creating to calculate the result. We will notice that the next code block takes a little longer to run than the previous one for that reason. ",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eRDD Actions\u003c/h3\u003e\n\u003cp\u003eIn the next code block we will count the number of lines in the file by calling the count function on the RDD. Count function on a RDD is a Action operation, which means Spark and YARN will be forced to allocate resource and execute the DAG it has been creating to calculate the result. We will notice that the next code block takes a little longer to run than the previous one for that reason.\u003c/p\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054663_243808810",
+      "id": "20151025-033801_974200319",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nprint raw_rdd.count()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "494021\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054663_243808810",
+      "id": "20151020-041637_1396716094",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Inspect what the data looks like",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eInspect what the data looks like\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054664_241885066",
+      "id": "20151025-041754_1010831945",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\nprint raw_rdd.take(5)",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "[u\u00270,tcp,http,SF,181,5450,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,8,8,0.00,0.00,0.00,0.00,1.00,0.00,0.00,9,9,1.00,0.00,0.11,0.00,0.00,0.00,0.00,0.00,normal.\u0027, u\u00270,tcp,http,SF,239,486,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,8,8,0.00,0.00,0.00,0.00,1.00,0.00,0.00,19,19,1.00,0.00,0.05,0.00,0.00,0.00,0.00,0.00,normal.\u0027, u\u00270,tcp,http,SF,235,1337,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,8,8,0.00,0.00,0.00,0.00,1.00,0.00,0.00,29,29,1.00,0.00,0.03,0.00,0.00,0.00,0.00,0.00,normal.\u0027, u\u00270,tcp,http,SF,219,1337,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,6,6,0.00,0.00,0.00,0.00,1.00,0.00,0.00,39,39,1.00,0.00,0.03,0.00,0.00,0.00,0.00,0.00,normal.\u0027, u\u00270,tcp,http,SF,217,2032,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,6,6,0.00,0.00,0.00,0.00,1.00,0.00,0.00,49,49,1.00,0.00,0.02,0.00,0.00,0.00,0.00,0.00,normal.\u0027]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054664_241885066",
+      "id": "20151020-041733_761077228",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Filtering lines in the data",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eFiltering lines in the data\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054664_241885066",
+      "id": "20151025-042742_1412779040",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\nnormal_raw_rdd \u003d raw_rdd.filter(lambda x: \u0027normal.\u0027 in x)",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054664_241885066",
+      "id": "20151020-153124_467610492",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Count the filtered RDD",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eCount the filtered RDD\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054665_241500317",
+      "id": "20151025-042841_261479489",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nnormal_count \u003d normal_raw_rdd.count()\n\nprint normal_count",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "97278\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054665_241500317",
+      "id": "20151020-153409_1001360617",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Importing local libraries",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eImporting local libraries\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054665_241500317",
+      "id": "20151025-042924_1173734316",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nfrom pprint import pprint\n\ncsv_rdd \u003d raw_rdd.map(lambda x: x.split(\",\"))\n\nhead_rows \u003d csv_rdd.take(5)\n\npprint(head_rows[0])\n",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "[u\u00270\u0027,\n u\u0027tcp\u0027,\n u\u0027http\u0027,\n u\u0027SF\u0027,\n u\u0027181\u0027,\n u\u00275450\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00271\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00270\u0027,\n u\u00278\u0027,\n u\u00278\u0027,\n u\u00270.00\u0027,\n u\u00270.00\u0027,\n u\u00270.00\u0027,\n u\u00270.00\u0027,\n u\u00271.00\u0027,\n u\u00270.00\u0027,\n u\u00270.00\u0027,\n u\u00279\u0027,\n u\u00279\u0027,\n u\u00271.00\u0027,\n u\u00270.00\u0027,\n u\u00270.11\u0027,\n u\u00270.00\u0027,\n u\u00270.00\u0027,\n u\u00270.00\u0027,\n u\u00270.00\u0027,\n u\u00270.00\u0027,\n u\u0027normal.\u0027]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054666_242654563",
+      "id": "20151020-153930_2114893315",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Using map functions in transformation",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eUsing map functions in transformation\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054668_240346070",
+      "id": "20151025-043024_234751730",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ndef parse_interaction(line):\n    elems \u003d line.split(\",\")\n    tag \u003d elems[41]\n    return (tag, elems)\n    \nkey_csv_rdd \u003d raw_rdd.map(parse_interaction)\nhead_rows \u003d key_csv_rdd.take(5)\npprint(head_rows[0])",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "(u\u0027normal.\u0027,\n [u\u00270\u0027,\n  u\u0027tcp\u0027,\n  u\u0027http\u0027,\n  u\u0027SF\u0027,\n  u\u0027181\u0027,\n  u\u00275450\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00271\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00270\u0027,\n  u\u00278\u0027,\n  u\u00278\u0027,\n  u\u00270.00\u0027,\n  u\u00270.00\u0027,\n  u\u00270.00\u0027,\n  u\u00270.00\u0027,\n  u\u00271.00\u0027,\n  u\u00270.00\u0027,\n  u\u00270.00\u0027,\n  u\u00279\u0027,\n  u\u00279\u0027,\n  u\u00271.00\u0027,\n  u\u00270.00\u0027,\n  u\u00270.11\u0027,\n  u\u00270.00\u0027,\n  u\u00270.00\u0027,\n  u\u00270.00\u0027,\n  u\u00270.00\u0027,\n  u\u00270.00\u0027,\n  u\u0027normal.\u0027])\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054668_240346070",
+      "id": "20151020-154737_124701995",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Using collect() on the Spark driver",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eUsing collect() on the Spark driver\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054668_240346070",
+      "id": "20151025-043052_1223908016",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\n#all_raw_rdd \u003d raw_rdd.collect()\n\n",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054669_239961321",
+      "id": "20151020-155215_321328122",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Extracting a smaller sample of the RDD",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eExtracting a smaller sample of the RDD\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054669_239961321",
+      "id": "20151025-043641_741109691",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nraw_rdd_sample \u003d raw_rdd.sample(False, 0.1, 1234)\nprint raw_rdd_sample.count()\nprint raw_rdd.count()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "49493\n494021\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054669_239961321",
+      "id": "20151020-155621_1541966917",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Local sample for local processing",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eLocal sample for local processing\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054670_241115568",
+      "id": "20151025-043813_1909205882",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nraw_data_local_sample \u003d raw_rdd.takeSample(False, 1000, 1234)\n\nnormal_data_sample \u003d [x.split(\",\") for x in raw_data_local_sample if \"normal.\" in x]\n\nnormal_data_sample_size \u003d len(normal_data_sample)\n\nnormal_ratio \u003d normal_data_sample_size/1000.0\n\nprint normal_ratio\n",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "0.188\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054670_241115568",
+      "id": "20151020-160650_1218451495",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Subtracting on RDD from another",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eSubtracting on RDD from another\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054671_240730819",
+      "id": "20151025-044008_680146541",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nattack_raw_rdd \u003d raw_rdd.subtract(normal_raw_rdd)\n\nprint attack_raw_rdd.count()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "396743\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054672_251119039",
+      "id": "20151020-162431_1736006903",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Listing the distinct items",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eListing the distinct items\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054672_251119039",
+      "id": "20151025-044203_1596662643",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nprotocols \u003d csv_rdd.map(lambda x: x[1]).distinct()\n\nprint protocols.collect()\n",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "[u\u0027udp\u0027, u\u0027icmp\u0027, u\u0027tcp\u0027]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054672_251119039",
+      "id": "20151020-163531_966055264",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nservices \u003d csv_rdd.map(lambda x: x[2]).distinct()\nprint services.collect()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "[u\u0027domain\u0027, u\u0027http_443\u0027, u\u0027Z39_50\u0027, u\u0027smtp\u0027, u\u0027urp_i\u0027, u\u0027private\u0027, u\u0027echo\u0027, u\u0027shell\u0027, u\u0027red_i\u0027, u\u0027eco_i\u0027, u\u0027sunrpc\u0027, u\u0027ftp_data\u0027, u\u0027urh_i\u0027, u\u0027pm_dump\u0027, u\u0027pop_3\u0027, u\u0027pop_2\u0027, u\u0027systat\u0027, u\u0027ftp\u0027, u\u0027uucp\u0027, u\u0027whois\u0027, u\u0027netbios_dgm\u0027, u\u0027efs\u0027, u\u0027remote_job\u0027, u\u0027daytime\u0027, u\u0027ntp_u\u0027, u\u0027finger\u0027, u\u0027ldap\u0027, u\u0027netbios_ns\u0027, u\u0027kshell\u0027, u\u0027iso_tsap\u0027, u\u0027ecr_i\u0027, u\u0027nntp\u0027, u\u0027printer\u0027, u\u0027domain_u\u0027, u\u0027uucp_path\u0027, u\u0027courier\u0027, u\u0027exec\u0027, u\u0027time\u0027, u\u0027netstat\u0027, u\u0027telnet\u0027, u\u0027gopher\u0027, u\u0027rje\u0027, u\u0027sql_net\u0027, u\u0027link\u0027, u\u0027auth\u0027, u\u0027netbios_ssn\u0027, u\u0027csnet_ns\u0027, u\u0027X11\u0027, u\u0027IRC\u0027, u\u0027tftp_u\u0027, u\u0027login\u0027, u\u0027supdup\u0027, u\u0027name\u0027, u\u0027nnsp\u0027, u\u0027mtp\u0027, u\u0027http\u0027, u\u0027bgp\u0027, u\u0027ctf\u0027, u\u0027hostnames\u0027, u\u0027klogin\u0027, u\u0027vmnet\u0027, u\u0027tim_i\u0027, u\u0027discard\u0027, u\u0027imap4\u0027, u\u0027other\u0027, u\u0027ssh\u0027]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054686_247271550",
+      "id": "20151020-164018_963420148",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Cartesion product",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eCartesion product\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054686_247271550",
+      "id": "20151025-044327_920393858",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nproduct \u003d protocols.cartesian(services).collect()\n\nprint len(product)",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "198\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054686_247271550",
+      "id": "20151020-164120_1905949484",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Filtering\nFiltering out the normal and attack events",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eFiltering\u003c/h3\u003e\n\u003cp\u003eFiltering out the normal and attack events\u003c/p\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054687_246886801",
+      "id": "20151025-044451_1279874784",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nnormal_csv_data \u003d csv_rdd.filter(lambda x: x[41]\u003d\u003d\"normal.\")\nattack_csv_data \u003d csv_rdd.filter(lambda x: x[41]!\u003d\"normal.\")",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054687_246886801",
+      "id": "20151020-164638_2050317014",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Reduce",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eReduce\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054687_246886801",
+      "id": "20151025-044553_1060339044",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nnormal_duration_data \u003d normal_csv_data.map(lambda x: int(x[0]))\ntotal_normal_duration \u003d normal_duration_data.reduce(lambda x, y: x + y)\nprint total_normal_duration\n\nattack_duration_data \u003d attack_csv_data.map(lambda x: int(x[0]))\ntotal_attack_duration \u003d attack_duration_data.reduce(lambda x, y: x + y)\nprint total_attack_duration",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "21075991\n2626792\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054687_246886801",
+      "id": "20151020-164253_1147743871",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n###Deriving Mean",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eDeriving Mean\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054687_246886801",
+      "id": "20151025-161102_1843984349",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nnormal_count \u003d normal_duration_data.count()\nattack_count \u003d attack_duration_data.count()\n\nprint round(total_normal_duration/float(normal_count),3)\nprint round(total_attack_duration/float(attack_count),3)",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "216.657\n6.621\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054690_233420590",
+      "id": "20151020-165248_1533675296",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n###Using Aggregate functions to calulate mean in one pass",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eUsing Aggregate functions to calulate mean in one pass\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054690_233420590",
+      "id": "20151025-161243_1508443786",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nnormal_sum_count \u003d normal_duration_data.aggregate(\n    (0,0), # the initial value\n    (lambda acc, value: (acc[0] + value, acc[1] + 1)), # combine val/acc\n    (lambda acc1, acc2: (acc1[0] + acc2[0], acc1[1] + acc2[1]))\n)\n\nprint round(normal_sum_count[0]/float(normal_sum_count[1]),3)\n\nattack_sum_count \u003d attack_duration_data.aggregate(\n    (0,0), # the initial value\n    (lambda acc, value: (acc[0] + value, acc[1] + 1)), # combine value with acc\n    (lambda acc1, acc2: (acc1[0] + acc2[0], acc1[1] + acc2[1])) # combine accumulators\n)\n\nprint round(attack_sum_count[0]/float(attack_sum_count[1]),3)",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "216.657\n6.621\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054690_233420590",
+      "id": "20151020-165707_2016593579",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n###Constructing a Key-Value RDD",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eConstructing a Key-Value RDD\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054690_233420590",
+      "id": "20151025-161349_962088361",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nkey_value_rdd \u003d csv_rdd.map(lambda x: (x[41], x))\n\nprint key_value_rdd.take(1)",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "[(u\u0027normal.\u0027, [u\u00270\u0027, u\u0027tcp\u0027, u\u0027http\u0027, u\u0027SF\u0027, u\u0027181\u0027, u\u00275450\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00271\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00270\u0027, u\u00278\u0027, u\u00278\u0027, u\u00270.00\u0027, u\u00270.00\u0027, u\u00270.00\u0027, u\u00270.00\u0027, u\u00271.00\u0027, u\u00270.00\u0027, u\u00270.00\u0027, u\u00279\u0027, u\u00279\u0027, u\u00271.00\u0027, u\u00270.00\u0027, u\u00270.11\u0027, u\u00270.00\u0027, u\u00270.00\u0027, u\u00270.00\u0027, u\u00270.00\u0027, u\u00270.00\u0027, u\u0027normal.\u0027])]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054691_233035841",
+      "id": "20151020-170153_1603800777",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Using reduceByKey to group and aggregate",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eUsing reduceByKey to group and aggregate\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054691_233035841",
+      "id": "20151025-161435_1491781947",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nkey_value_duration \u003d csv_rdd.map(lambda x: (x[41], float(x[0]))) \ndurations_by_key \u003d key_value_duration.reduceByKey(lambda x, y: x + y)\n\nprint durations_by_key.collect()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "[(u\u0027guess_passwd.\u0027, 144.0), (u\u0027nmap.\u0027, 0.0), (u\u0027warezmaster.\u0027, 301.0), (u\u0027rootkit.\u0027, 1008.0), (u\u0027warezclient.\u0027, 627563.0), (u\u0027smurf.\u0027, 0.0), (u\u0027pod.\u0027, 0.0), (u\u0027neptune.\u0027, 0.0), (u\u0027normal.\u0027, 21075991.0), (u\u0027spy.\u0027, 636.0), (u\u0027ftp_write.\u0027, 259.0), (u\u0027phf.\u0027, 18.0), (u\u0027portsweep.\u0027, 1991911.0), (u\u0027teardrop.\u0027, 0.0), (u\u0027buffer_overflow.\u0027, 2751.0), (u\u0027land.\u0027, 0.0), (u\u0027imap.\u0027, 72.0), (u\u0027loadmodule.\u0027, 326.0), (u\u0027perl.\u0027, 124.0), (u\u0027multihop.\u0027, 1288.0), (u\u0027back.\u0027, 284.0), (u\u0027ipsweep.\u0027, 43.0), (u\u0027satan.\u0027, 64.0)]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054691_233035841",
+      "id": "20151020-170625_2051205977",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Using countByKey on a key-value RDD",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eUsing countByKey on a key-value RDD\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054691_233035841",
+      "id": "20151025-161633_1074893320",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ncounts_by_key \u003d key_value_rdd.countByKey()\nprint counts_by_key",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "defaultdict(\u003ctype \u0027int\u0027\u003e, {u\u0027guess_passwd.\u0027: 53, u\u0027nmap.\u0027: 231, u\u0027warezmaster.\u0027: 20, u\u0027rootkit.\u0027: 10, u\u0027warezclient.\u0027: 1020, u\u0027smurf.\u0027: 280790, u\u0027pod.\u0027: 264, u\u0027neptune.\u0027: 107201, u\u0027normal.\u0027: 97278, u\u0027spy.\u0027: 2, u\u0027ftp_write.\u0027: 8, u\u0027phf.\u0027: 4, u\u0027portsweep.\u0027: 1040, u\u0027teardrop.\u0027: 979, u\u0027buffer_overflow.\u0027: 30, u\u0027land.\u0027: 21, u\u0027imap.\u0027: 12, u\u0027loadmodule.\u0027: 9, u\u0027perl.\u0027: 3, u\u0027multihop.\u0027: 7, u\u0027back.\u0027: 2203, u\u0027ipsweep.\u0027: 1247, u\u0027satan.\u0027: 1589})\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054691_233035841",
+      "id": "20151020-170817_439456736",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n###Using combineByKey to get duration and attempts by type in a single pass from a key-value RDD",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eUsing combineByKey to get duration and attempts by type in a single pass from a key-value RDD\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054692_231112096",
+      "id": "20151025-161924_2005284664",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nsum_counts \u003d key_value_duration.combineByKey(\n    (lambda x: (x, 1)), # the initial value, with value x and count 1\n    (lambda acc, value: (acc[0]+value, acc[1]+1)), # how to combine a pair value with the accumulator: sum value, and increment count\n    (lambda acc1, acc2: (acc1[0]+acc2[0], acc1[1]+acc2[1])) # combine accumulators\n)\n\nprint sum_counts.collectAsMap()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "{u\u0027guess_passwd.\u0027: (144.0, 53), u\u0027nmap.\u0027: (0.0, 231), u\u0027loadmodule.\u0027: (326.0, 9), u\u0027rootkit.\u0027: (1008.0, 10), u\u0027warezclient.\u0027: (627563.0, 1020), u\u0027smurf.\u0027: (0.0, 280790), u\u0027pod.\u0027: (0.0, 264), u\u0027neptune.\u0027: (0.0, 107201), u\u0027normal.\u0027: (21075991.0, 97278), u\u0027spy.\u0027: (636.0, 2), u\u0027ftp_write.\u0027: (259.0, 8), u\u0027phf.\u0027: (18.0, 4), u\u0027portsweep.\u0027: (1991911.0, 1040), u\u0027teardrop.\u0027: (0.0, 979), u\u0027buffer_overflow.\u0027: (2751.0, 30), u\u0027land.\u0027: (0.0, 21), u\u0027imap.\u0027: (72.0, 12), u\u0027warezmaster.\u0027: (301.0, 20), u\u0027perl.\u0027: (124.0, 3), u\u0027multihop.\u0027: (1288.0, 7), u\u0027back.\u0027: (284.0, 2203), u\u0027ipsweep.\u0027: (43.0, 1247), u\u0027satan.\u0027: (64.0, 1589)}\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054692_231112096",
+      "id": "20151020-170956_1204906051",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Sorting a key-value RDD",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eSorting a key-value RDD\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054692_231112096",
+      "id": "20151025-162043_805316413",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nduration_means_by_type \u003d sum_counts.map(lambda (key,value): (key, round(value[0]/value[1],3))).collectAsMap()\n\n# Print them sorted\nfor tag in sorted(duration_means_by_type, key\u003dduration_means_by_type.get, reverse\u003dTrue):\n    print tag, duration_means_by_type[tag]",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "portsweep. 1915.299\nwarezclient. 615.258\nspy. 318.0\nnormal. 216.657\nmultihop. 184.0\nrootkit. 100.8\nbuffer_overflow. 91.7\nperl. 41.333\nloadmodule. 36.222\nftp_write. 32.375\nwarezmaster. 15.05\nimap. 6.0\nphf. 4.5\nguess_passwd. 2.717\nback. 0.129\nsatan. 0.04\nipsweep. 0.034\nnmap. 0.0\nsmurf. 0.0\npod. 0.0\nneptune. 0.0\nteardrop. 0.0\nland. 0.0\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054692_231112096",
+      "id": "20151020-171127_166126716",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n###Creating a DataFrame",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eCreating a DataFrame\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054692_231112096",
+      "id": "20151025-162202_1511009897",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nrow_data \u003d csv_rdd.map(lambda p: Row(\n    duration\u003dint(p[0]), \n    protocol_type\u003dp[1],\n    service\u003dp[2],\n    flag\u003dp[3],\n    src_bytes\u003dint(p[4]),\n    dst_bytes\u003dint(p[5])\n    )\n)\n\ninteractions_df \u003d sqlContext.createDataFrame(row_data)\ninteractions_df.registerTempTable(\"interactions\")",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054693_230727347",
+      "id": "20151020-171250_677927139",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Querying with SQL statments over a DataFrame",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eQuerying with SQL statments over a DataFrame\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054693_230727347",
+      "id": "20151025-162240_154982058",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql\n\nSELECT duration, dst_bytes FROM interactions WHERE protocol_type \u003d \u0027tcp\u0027 AND duration \u003e 1000 AND dst_bytes \u003d 0",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/sql",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "duration\tdst_bytes\n5057\t0\n5059\t0\n5051\t0\n5056\t0\n5051\t0\n5039\t0\n5062\t0\n5041\t0\n5056\t0\n5064\t0\n5043\t0\n5061\t0\n5049\t0\n5061\t0\n5048\t0\n5047\t0\n5044\t0\n5063\t0\n5068\t0\n5062\t0\n5046\t0\n5052\t0\n5044\t0\n5054\t0\n5039\t0\n5058\t0\n5051\t0\n5032\t0\n5063\t0\n5040\t0\n5051\t0\n5066\t0\n5044\t0\n5051\t0\n5036\t0\n5055\t0\n2426\t0\n5047\t0\n5057\t0\n5037\t0\n5057\t0\n5062\t0\n5051\t0\n5051\t0\n5053\t0\n5064\t0\n5044\t0\n5051\t0\n5033\t0\n5066\t0\n5063\t0\n5056\t0\n5042\t0\n5063\t0\n5060\t0\n5056\t0\n5049\t0\n5043\t0\n5039\t0\n5041\t0\n42448\t0\n42088\t0\n41065\t0\n40929\t0\n40806\t0\n40682\t0\n40571\t0\n40448\t0\n40339\t0\n40232\t0\n40121\t0\n36783\t0\n36674\t0\n36570\t0\n36467\t0\n36323\t0\n36204\t0\n32038\t0\n31925\t0\n31809\t0\n31709\t0\n31601\t0\n31501\t0\n31401\t0\n31301\t0\n31194\t0\n31061\t0\n30935\t0\n30835\t0\n30735\t0\n30619\t0\n30518\t0\n30418\t0\n30317\t0\n30217\t0\n30077\t0\n25420\t0\n22921\t0\n22821\t0\n22721\t0\n22616\t0\n22516\t0\n22416\t0\n22316\t0\n22216\t0\n21987\t0\n21887\t0\n21767\t0\n21661\t0\n21561\t0\n21455\t0\n21334\t0\n21223\t0\n21123\t0\n20983\t0\n14682\t0\n14420\t0\n14319\t0\n14198\t0\n14098\t0\n13998\t0\n13898\t0\n13796\t0\n13678\t0\n13578\t0\n13448\t0\n13348\t0\n13241\t0\n13141\t0\n13033\t0\n12933\t0\n12833\t0\n12733\t0\n12001\t0\n5678\t0\n5010\t0\n1298\t0\n1031\t0\n36438\t0\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054693_230727347",
+      "id": "20151020-194340_1845988549",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n###Printing the schema of the DataFrame",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003ePrinting the schema of the DataFrame\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054693_230727347",
+      "id": "20151025-162341_1003254343",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ninteractions_df.printSchema()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "root\n |-- dst_bytes: long (nullable \u003d true)\n |-- duration: long (nullable \u003d true)\n |-- flag: string (nullable \u003d true)\n |-- protocol_type: string (nullable \u003d true)\n |-- service: string (nullable \u003d true)\n |-- src_bytes: long (nullable \u003d true)\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054694_231881594",
+      "id": "20151020-194417_1802294435",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md \n###Querying a DataFrame",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eQuerying a DataFrame\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054694_231881594",
+      "id": "20151025-162335_648508524",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ninteractions_df.select(\"protocol_type\", \"duration\", \"dst_bytes\").groupBy(\"protocol_type\").count().show()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "protocol_type count \nudp           20354 \ntcp           190065\nicmp          283602\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054694_231881594",
+      "id": "20151020-194709_695055854",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ninteractions_df.select(\"protocol_type\", \"duration\", \"dst_bytes\").filter(interactions_df.duration\u003e1000).filter(interactions_df.dst_bytes\u003d\u003d0).groupBy(\"protocol_type\").count().show()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "protocol_type count\ntcp           139  \n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054694_231881594",
+      "id": "20151020-195405_164097486",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n###Calculating a derived column on a DataFrame",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003eCalculating a derived column on a DataFrame\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054695_231496845",
+      "id": "20151025-162508_1142356987",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ndef get_label_type(label):\n    if label!\u003d\"normal.\":\n        return \"attack\"\n    else:\n        return \"normal\"\n    \nrow_labeled_data \u003d csv_rdd.map(lambda p: Row(\n    duration\u003dint(p[0]), \n    protocol_type\u003dp[1],\n    service\u003dp[2],\n    flag\u003dp[3],\n    src_bytes\u003dint(p[4]),\n    dst_bytes\u003dint(p[5]),\n    label\u003dget_label_type(p[41])\n    )\n)\ninteractions_labeled_df \u003d sqlContext.createDataFrame(row_labeled_data)",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054695_231496845",
+      "id": "20151020-195641_1610602237",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ninteractions_labeled_df.select(\"label\").groupBy(\"label\").count().show()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "label  count \nattack 396743\nnormal 97278 \n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054695_231496845",
+      "id": "20151020-195909_100412061",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n###groupBY on a DataFrame ",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch3\u003egroupBY on a DataFrame\u003c/h3\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054695_231496845",
+      "id": "20151025-162617_120349085",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ninteractions_labeled_df.select(\"label\", \"protocol_type\").groupBy(\"label\", \"protocol_type\").count().show()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "label  protocol_type count \nattack udp           1177  \nattack tcp           113252\nattack icmp          282314\nnormal udp           19177 \nnormal tcp           76813 \nnormal icmp          1288  \n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054696_229573101",
+      "id": "20151020-195957_179265569",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ninteractions_labeled_df.select(\"label\", \"protocol_type\", \"dst_bytes\").groupBy(\"label\", \"protocol_type\", interactions_labeled_df.dst_bytes\u003d\u003d0).count().show()",
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "label  protocol_type (dst_bytes \u003d 0) count \nnormal icmp          true            1288  \nattack udp           true            1166  \nattack udp           false           11    \nnormal udp           true            3594  \nnormal udp           false           15583 \nattack tcp           true            110583\nattack tcp           false           2669  \nnormal tcp           true            9313  \nnormal tcp           false           67500 \nattack icmp          true            282314\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054696_229573101",
+      "id": "20151020-200116_1068349697",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "dateUpdated": "Feb 19, 2018 3:34:14 AM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1519040054696_229573101",
+      "id": "20151020-200231_820336316",
+      "dateCreated": "Feb 19, 2018 3:34:14 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Getting Started / Hello World",
+  "id": "2D653HHWJ",
+  "angularObjects": {
+    "2D6KMVEJB:shared_process": [],
+    "2D8YST44Q:shared_process": [],
+    "2D5NEKACD:shared_process": [],
+    "2D78MJMJ8:shared_process": [],
+    "2D6S9AZBV:shared_process": [],
+    "2D6J9P331:shared_process": [],
+    "2D69DCA51:shared_process": [],
+    "2D5RQMZNF:shared_process": [],
+    "2D5NCQX94:shared_process": [],
+    "2D78X28BR:shared_process": [],
+    "2D6EDPEV7:shared_process": [],
+    "2D6KYQ1JZ:shared_process": [],
+    "2D71SGCS3:shared_process": [],
+    "2D5FSYRWA:shared_process": [],
+    "2D8FSEPU6:shared_process": [],
+    "2D7DCUW2A:shared_process": [],
+    "2D81WJGBZ:shared_process": [],
+    "2D6PQ5G9Q:shared_process": [],
+    "2D767KM18:shared_process": [],
+    "2D8YQ3A7W:shared_process": [],
+    "2D8Z2R4XC:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}
